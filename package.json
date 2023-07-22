@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npx start-server -s ./slack-clone/build",
     "build": "npm run build --prefix slack-clone",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "npm ci --prefix slack-clone"
   },
   "repository": {
     "type": "git",
