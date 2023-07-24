@@ -1,0 +1,8 @@
+.input-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-validation {
+    color: darkred;
+}
