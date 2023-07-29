@@ -3,18 +3,33 @@ import {Formik} from "formik";
 import * as Yup from 'yup';
 
 import "./AuthorizationPage.css";
+import {login} from "./authApi";
+import {useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {useAuthToken} from "../../Hooks/useAuthToken";
 
 const LoginShema = Yup.object().shape({
-    email: Yup.string().email("Неверный формат").required("Обязательное поле"),
-    password: Yup.string().min(6, "Не менее 6 символов").required("Обязательное поле")
+    email: Yup.string().required("Обязательное поле"),
+    password: Yup.string().min(5, "Не менее 5 символов").required("Обязательное поле")
 })
 
 export const AuthorizationPage = () => {
+    const [showWarning, setShowWarning] = useState(false);
+    const navigate = useNavigate();
+    const { setToken } = useAuthToken();
+
     const onSubmit = (values, { setSubmitting }) => {
-        setTimeout(() => {
-            console.log(JSON.stringify(values, null, 2));
+        login(values.email, values.password).then(({ data }) => {
+            setShowWarning(false);
+            if (data.token) {
+                setToken(data.token);
+                navigate("/", { replace: true });
+            }
+        }).catch(() => {
+            setShowWarning(true);
+        }).finally(() => {
             setSubmitting(false);
-        }, 400);
+        });
     };
 
     return (
@@ -44,7 +59,7 @@ export const AuthorizationPage = () => {
                             <input
                                 id="emailInput"
                                 className="form-control"
-                                type="email"
+                                type="text"
                                 name="email"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
@@ -66,9 +81,12 @@ export const AuthorizationPage = () => {
                                 value={values.password}
                             />
                         </div>
-                        <button type="submit" disabled={isSubmitting} className="btn btn-primary">
-                            Submit
-                        </button>
+                        <div className="d-flex p-2">
+                            <button type="submit" disabled={isSubmitting} className="btn btn-primary">
+                                Submit
+                            </button>
+                            {showWarning && <div className="input-validation p-2">Вы ввели неверный логин или пароль</div>}
+                        </div>
                     </form>
                 )}
             </Formik>
