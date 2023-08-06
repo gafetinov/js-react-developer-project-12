@@ -5,9 +5,9 @@ export const useAuthToken = () => {
         localStorage.setItem(authTokenKey, token);
     }
 
-    const isAuthorized = () => {
-        return !!localStorage.getItem(authTokenKey);
+    const getToken = () => {
+        return localStorage.getItem(authTokenKey);
     }
 
-    return { setToken, isAuthorized };
+    return { setToken, getToken };
 }
